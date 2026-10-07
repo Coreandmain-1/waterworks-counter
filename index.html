@@ -81,7 +81,7 @@ function couplingLookup(q,s){
  show(part,"Straight coupling — "+desc,s,cs.includes("pvc")?"PVC Pack Joints are for Schedule 40/80 PVC or IPS PE DR9/DR11.":"");
 }
 function saddleLookup(q){
- let pm=q.match(/(4|6|8|10|12)\s*(?:inch|in\b|"|\s)c\s*900/);
+ let pm=q.match(/(4|6|8|10|12)\s*(?:inch|in\b|")?\s*c\s*900/);
  if(!pm){out.textContent="For a C900 saddle, tell me the C900 pipe size: 4, 6, 8, 10, or 12 inch.";return}
  let pipe=pm[1], od={"4":"480","6":"690","8":"905","10":"1110","12":"1320"}[pipe];
  let tm=q.match(/(1-1\/2|1 1\/2|1-1\/4|1 1\/4|3\/4|1\/2|2|1)\s*(?:inch|in\b|")?\s*(cc|awwa|ip|fip)/);
