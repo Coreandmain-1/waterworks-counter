@@ -46,7 +46,7 @@ function show(part,desc,size,note=""){out.innerHTML='<span class="part">'+part+'
 function corpLookup(q,s){
  const ball=q.includes("ballcorp")||q.includes("ball corp")||q.includes("ball corporation");
  const inlet=(q.includes("cc")||q.includes("awwa"))?"cc":q.includes("mip")?"mip":null;
- let outlet=q.includes("pvc")||q.includes("ips")?"pvc":q.includes("pep")||q.includes("pe pipe")||/(^|\\s)pe(?=\\s|$)/.test(q)?"pep":q.includes("fip")?"fip":q.includes("flare")?"flare":q.includes("cts")?"cts":q.includes("mip")&&inlet==="cc"?"mip":null;
+ let outlet=q.includes("pvc")||q.includes("ips")?"pvc":q.includes("pep")||q.includes("pe pipe")||/(^|\s)pe(?=\s|$)/.test(q)?"pep":q.includes("fip")?"fip":q.includes("flare")?"flare":q.includes("cts")?"cts":q.includes("mip")&&inlet==="cc"?"mip":null;
  if(!inlet){out.textContent="For a corporation stop, tell me the inlet: CC/AWWA or MIP.";return}
  if(!outlet){out.textContent="Tell me the corporation stop outlet: CTS, PEP, PVC/IPS, flare, MIP, or FIP.";return}
  const series={cc:{cts:"1000",pep:"1001",pvc:"1002",flare:"600",mip:"400",fip:"1600"},mip:{cts:"1100",pep:"1101",pvc:"1102",flare:"700",mip:"500",fip:"1700"}}[inlet][outlet];
