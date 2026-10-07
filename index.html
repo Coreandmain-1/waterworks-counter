@@ -98,7 +98,7 @@ function saddleLookup(q){
 function lookup(){let raw=document.getElementById("q").value,q=norm(raw),type=q.includes("saddle")?"saddle":q.includes("corp")?"corp":q.includes("curb")||q.includes("ball valve")?"curb":q.includes("coupl")?"coupling":null;
  if(!type){out.textContent="Tell me the product type: saddle, corporation stop, curb stop/ball valve, or coupling.";return}
  let s=requestedSize(q);if(type!=="saddle"&&!s){out.textContent="I recognized the product, but I need the size.";return}
- if(type==="saddle")saddleLookup(q);else if(type==="corp")corpLookup(q,s);else if(type==="curb")curbLookup(q,s);else couplingLookup(q,s)}
+ if(type==="curb" && /\b(cc|awwa)\b/.test(q)){out.textContent="NO VERIFIED MATCH: CC/AWWA thread requested on a curb stop. CC/AWWA is not interchangeable with FIP/MIP. Confirm whether you need a corporation stop or a threaded curb-stop connection before selecting a Ford part number.";return}\n if(type==="saddle")saddleLookup(q);else if(type==="corp")corpLookup(q,s);else if(type==="curb")curbLookup(q,s);else couplingLookup(q,s)}
 function voice(){if(!("webkitSpeechRecognition" in window)){alert("Use your iPhone Shortcut dictation, or type the request here.");return}let r=new webkitSpeechRecognition();r.lang="en-US";r.onresult=e=>{q.value=e.results[0][0].transcript;lookup()};r.start()}
 const u=new URLSearchParams(location.search);if(u.get("q")){q.value=u.get("q");lookup()}
 </script></main></body></html>
