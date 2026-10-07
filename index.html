@@ -81,12 +81,14 @@ function couplingLookup(q,s){
  show(part,"Straight coupling — "+desc,s,cs.includes("pvc")?"PVC Pack Joints are for Schedule 40/80 PVC or IPS PE DR9/DR11.":"");
 }
 function saddleLookup(q){
- let pm=q.match(/(4|6|8|10|12)\s*(?:inch|in\b|")?\s*c\s*900/);
+ let pm=q.match(/\b(4|6|8|10|12)\b(?=[^\n]{0,20}c\s*900)/);
  if(!pm){out.textContent="For a C900 saddle, tell me the C900 pipe size: 4, 6, 8, 10, or 12 inch.";return}
  let pipe=pm[1], od={"4":"480","6":"690","8":"905","10":"1110","12":"1320"}[pipe];
- let tm=q.match(/(1-1\/2|1 1\/2|1-1\/4|1 1\/4|3\/4|1\/2|2|1)\s*(?:inch|in\b|")?\s*(cc|awwa|ip|fip)/);
- if(!tm){out.textContent="Tell me the saddle outlet size and thread, for example 1 inch CC or 1 inch IP.";return}
- let ts=tm[1].replace("1 1/2","1-1/2").replace("1 1/4","1-1/4"), thread=(tm[2]==="cc"||tm[2]==="awwa")?"CC":"IP";
+ let om=q.match(/(?:cc|awwa|ip|fip)\s*(?:outlet\s*)?(1-1\/2|1 1\/2|1-1\/4|1 1\/4|3\/4|1\/2|2|1)(?:\s*(?:inch|in\b|"))?/)
+       ||q.match(/(1-1\/2|1 1\/2|1-1\/4|1 1\/4|3\/4|1\/2|2|1)(?:\s*(?:inch|in\b|"))?\s*(?:outlet\s*)?(cc|awwa|ip|fip)/);
+ let threadMatch=q.match(/\b(cc|awwa|ip|fip)\b/);
+ if(!om||!threadMatch){out.textContent="Tell me the saddle outlet size and thread, for example 1 inch CC or CC outlet 1 inch.";return}
+ let ts=om[1].replace("1 1/2","1-1/2").replace("1 1/4","1-1/4"), thread=(threadMatch[1]==="cc"||threadMatch[1]==="awwa")?"CC":"IP";
  let tc={"1/2":"1","3/4":"3","1":"4","1-1/4":"5","1-1/2":"6","2":"7"}[ts];
  if(!tc){out.textContent="That outlet size is not loaded for this saddle.";return}
  let part="FC101-"+od+"-"+thread+tc;
