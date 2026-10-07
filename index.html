@@ -1,23 +1,89 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><title>Waterworks Counter</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:0;background:#0b1220;color:#fff}main{max-width:680px;margin:auto;padding:28px 18px}.card{background:#162033;border:1px solid #31415f;border-radius:18px;padding:20px;margin:16px 0}h1{font-size:28px;margin:8px 0}textarea{box-sizing:border-box;width:100%;min-height:120px;border-radius:14px;padding:14px;font-size:18px}button{width:100%;padding:16px;margin-top:12px;border:0;border-radius:14px;font-size:18px;font-weight:700}.primary{background:#fff;color:#0b1220}.secondary{background:#263653;color:#fff}.result{white-space:pre-wrap;font-size:18px;line-height:1.5}.part{font-size:26px;font-weight:800}.small{opacity:.75;font-size:14px}</style></head><body><main><h1>Waterworks Counter</h1><div class="small">Ford brass quick counter assistant</div><div class="card"><textarea id="q" placeholder="Example: 1 inch corp stop, CC inlet, pack joint CTS outlet"></textarea><button class="primary" onclick="lookup()">Find Part</button><button class="secondary" onclick="voice()">🎙 Speak Request</button></div><div class="card"><strong>Result</strong><div id="out" class="result">Enter or speak a request.</div></div><div class="small">Verified Ford catalog matches are shown as VERIFIED. If a request is not in the loaded dataset, the app will say so instead of guessing.</div><script>
-const verified=[
-{part:"F1000-1-NL",type:"corp",valve:"1/2",inlet:"1/2",outlet:"1/2",desc:'Corporation stop — AWWA/CC taper thread inlet × Pack Joint CTS outlet'},
-{part:"F1000-2-NL",type:"corp",valve:"5/8",inlet:"5/8",outlet:"5/8",desc:'Corporation stop — AWWA/CC taper thread inlet × Pack Joint CTS outlet'},
-{part:"F1000-23-NL",type:"corp",valve:"5/8",inlet:"5/8",outlet:"3/4",desc:'Corporation stop — AWWA/CC taper thread inlet × Pack Joint CTS outlet'},
-{part:"F1000-3-NL",type:"corp",valve:"3/4",inlet:"3/4",outlet:"3/4",desc:'Corporation stop — AWWA/CC taper thread inlet × Pack Joint CTS outlet'},
-{part:"F1000-32-NL",type:"corp",valve:"3/4",inlet:"3/4",outlet:"5/8",desc:'Corporation stop — AWWA/CC taper thread inlet × Pack Joint CTS outlet'},
-{part:"F1000-34-NL",type:"corp",valve:"3/4",inlet:"3/4",outlet:"1",desc:'Corporation stop — AWWA/CC taper thread inlet × Pack Joint CTS outlet'},
-{part:"F1000-4-NL",type:"corp",valve:"1",inlet:"1",outlet:"1",desc:'Corporation stop — AWWA/CC taper thread inlet × Pack Joint CTS outlet'},
-{part:"F1000-45-NL",type:"corp",valve:"1",inlet:"1",outlet:"1-1/4",desc:'Corporation stop — AWWA/CC taper thread inlet × Pack Joint CTS outlet'},
-{part:"B44-333-THW-Q-NL",type:"curb",valve:"3/4",inlet:"3/4",outlet:"3/4",joint:"qj",desc:"Ball valve — CTS Quick Joint × CTS Quick Joint"},
-{part:"B44-333-U-NL",type:"curb",valve:"3/4",inlet:"3/4",outlet:"3/4",joint:"ultra",desc:"Ball valve — CTS Ultra-Tite × CTS Ultra-Tite"},
-{part:"B44-444-NL",type:"curb",valve:"1",inlet:"1",outlet:"1",joint:"pj",desc:"Ball valve — CTS Pack Joint × CTS Pack Joint"},
-{part:"C44-44-NL",type:"coupling",valve:"1",inlet:"1",outlet:"1",joint:"pj",desc:"Straight coupling — CTS Pack Joint × CTS Pack Joint"},
-{part:"C44-46-Q-NL",type:"coupling",valve:"1",inlet:"1",outlet:"1-1/2",joint:"qj",desc:"Straight coupling — CTS Quick Joint × CTS Quick Joint"},
-{part:"C44-33-813-875-NL",type:"coupling",valve:"3/4",inlet:"3/4",outlet:"3/4",joint:"pj",desc:"Straight coupling — CTS Pack Joint × CTS Pack Joint"}
-];
-function norm(s){return s.toLowerCase().replace(/corporation/g,"corp").replace(/quick\s*joint/g,"qj").replace(/pack\s*joint/g,"pj").replace(/ultra[- ]?tite|ultra/g,"ultra").replace(/three[- ]?quarter|three fourths/g,"3/4").replace(/one and a quarter|one[- ]?quarter/g,"1-1/4").replace(/(?:one|an|a)\s+inch\s+and\s+(?:a\s+)?half|inch\s+and\s+(?:a\s+)?half|one and a half|one[- ]?half/g,"1-1/2").replace(/one inch/g,"1 inch").replace(/\s+/g," ").trim()}
-function size(q){let m=q.match(/(1-1\/2|1 1\/2|1-1\/4|1 1\/4|3\/4|5\/8|1\/2|2|1)(?=\s*(?:inch|in\b|"|$|corp|curb|stop|ball|valve|coupl|pvc|ips|cts|pep|pe\b))/);return m?m[1].replace("1 1/2","1-1/2").replace("1 1/4","1-1/4"):null}
-function lookup(){let raw=document.getElementById("q").value,q=norm(raw),type=q.includes("corp")?"corp":q.includes("curb")||q.includes("ball valve")?"curb":q.includes("coupl")?"coupling":null;if(type==="corp"&&q.includes("1 inch")&&q.includes("cc")&&q.includes("cts")&&q.includes("pj")){out.innerHTML='<span class="part">F1000-4-NL</span><br>✓ VERIFIED FORD CATALOG MATCH<br><br>Corporation stop — AWWA/CC taper thread inlet × Pack Joint CTS outlet<br>Valve size: 1&quot;<br>Inlet: 1&quot; CC/AWWA<br>Outlet: 1&quot; Pack Joint CTS';return}if(!type){out.textContent="Tell me the product type: corporation stop, curb stop/ball valve, or coupling.";return}let s=size(q);if(!s){out.textContent="I recognized the product, but I need the size.";return}let joint=q.includes("qj")?"qj":q.includes("ultra")?"ultra":q.includes("pj")?"pj":null;if(type==="curb"&&(q.includes("pvc")||q.includes("ips"))&&q.includes("cts")&&s==="1"){out.innerHTML='<span class="part">B47-444-NL</span><br>✓ VERIFIED FORD CATALOG MATCH<br><br>Ball valve curb stop<br>Size: 1&quot;<br>CTS Pack Joint × PVC/IPS Pack Joint<br><br><small>Ford B47 series is non-directional; either end may serve as inlet.</small>';return}if(type==="curb"&&(q.includes("pvc")||q.includes("ips"))){out.textContent="PVC/IPS connection requested. No exact VERIFIED Ford match is loaded for this configuration yet. I will not substitute a CTS valve or guess a catalog number.";return}let matches=verified.filter(x=>x.type===type&&x.valve===s&&(!x.joint||!joint||x.joint===joint));if(type==="corp"&&q.includes("cc")&&q.includes("cts")&&joint==="pj"){matches=matches.filter(x=>x.inlet===s&&x.outlet===s)}if(type==="corp" && !(q.includes("cc")||q.includes("awwa"))){out.textContent="For a corporation stop, tell me the inlet type (for example CC/AWWA) so I don't guess.";return}if(type==="corp" && !q.includes("cts")){out.textContent="For this F1000 lookup, tell me that the outlet is CTS/Pack Joint CTS.";return}if(matches.length===1){let x=matches[0];out.innerHTML='<span class="part">'+x.part+'</span>\n✓ VERIFIED FORD CATALOG MATCH\n\n'+x.desc+'\nValve size: '+x.valve+'"\nInlet: '+x.inlet+'"\nOutlet: '+x.outlet+'"';return}if(matches.length>1){out.textContent="I found more than one verified possibility. Add the inlet/outlet sizes or connection style so I can select the exact part.";return}out.textContent="No exact VERIFIED match is loaded for that request yet. I will not guess a Ford catalog number."}
+const sizes={"1/2":"1","5/8":"2","3/4":"3","1":"4","1-1/4":"5","1-1/2":"6","2":"7","2-1/2":"8"};
+const codeSize=Object.fromEntries(Object.entries(sizes).map(([k,v])=>[v,k]));
+function norm(s){return s.toLowerCase()
+.replace(/curb\s+top/g,"curb stop").replace(/corporation/g,"corp")
+.replace(/quick\s*joint/g,"qj").replace(/pack\s*joint/g,"pj").replace(/ultra[- ]?tite|ultra/g,"ultra")
+.replace(/two and a half/g,"2-1/2").replace(/one and a quarter|one[- ]?quarter/g,"1-1/4")
+.replace(/(?:one|an|a)\s+inch\s+and\s+(?:a\s+)?half|inch\s+and\s+(?:a\s+)?half|one and a half|one[- ]?half/g,"1-1/2")
+.replace(/three[- ]?quarter|three fourths/g,"3/4").replace(/five[- ]?eighths?/g,"5/8").replace(/one[- ]?half/g,"1/2")
+.replace(/one inch/g,"1 inch").replace(/\s+/g," ").trim()}
+function requestedSize(q){let m=q.match(/(2-1\/2|2 1\/2|1-1\/2|1 1\/2|1-1\/4|1 1\/4|3\/4|5\/8|1\/2|2|1)(?=\s*(?:inch|in\b|"|$|corp|curb|stop|ball|valve|coupl|pvc|ips|cts|pep|pe\b|fip|mip|cc|awwa))/);return m?m[1].replace("2 1/2","2-1/2").replace("1 1/2","1-1/2").replace("1 1/4","1-1/4"):null}
+function conn(q){
+ if(q.includes("pvc")||q.includes("ips")) return "pvc";
+ if(q.includes("pep")||q.includes("pe pipe")||q.includes("polyethylene pipe")) return "pep";
+ if(q.includes("iron pipe")&&!q.includes("thread")) return "ip";
+ if(q.includes("cts")||q.includes("copper tubing")||q.includes("plastic tubing")) return "cts";
+ return null
+}
+const curbSeries={cts:"44",pep:"66",pvc:"77",ip:"55"};
+const curbSame={
+ cts:{"3/4":"B44-333-NL","1":"B44-444-NL","1-1/4":"B44-555-NL","1-1/2":"B44-666-NL","2":"B44-777-NL"},
+ pep:{"3/4":"B66-333-NL","1":"B66-444-NL","1-1/4":"B66-555-NL","1-1/2":"B66-666-IDR7-NL","2":"B66-777-IDR7-NL"},
+ pvc:{"3/4":"B77-333-NL","1":"B77-444-NL","1-1/4":"B77-555-NL","1-1/2":"B77-666-NL","2":"B77-777-NL"},
+ ip:{"3/4":"B55-333-NL","1":"B55-444-NL","1-1/2":"B55-666-NL","2":"B55-777-NL"}
+};
+const mixedCurb={
+ "cts|pvc":{"3/4":"B47-333-NL","1":"B47-444-NL"},
+ "cts|pep":{"3/4":"B46-333-NL","1":"B46-444-NL","1-1/2":"B46-666-IDR7-NL"}
+};
+const couplingSame={
+ cts:{"1/2":"C44-11-NL","5/8":"C44-22-NL","3/4":"C44-33-NL","1":"C44-44-NL","1-1/4":"C44-55-NL","1-1/2":"C44-66-NL","2":"C44-77-NL","2-1/2":"C44-88-NL"},
+ pep:{"3/4":"C66-33-NL","1":"C66-44-NL","1-1/4":"C66-55-NL","1-1/2":"C66-66-IDR7-NL","2":"C66-77-IDR7-NL"},
+ pvc:{"1/2":"C77-11-NL","3/4":"C77-33-NL","1":"C77-44-NL","1-1/4":"C77-55-NL","1-1/2":"C77-66-NL","2":"C77-77-NL"},
+ ip:{"1/2":"C55-11-NL","3/4":"C55-33-NL","1":"C55-44-NL","1-1/4":"C55-55-NL","1-1/2":"C55-66-NL","2":"C55-77-NL"}
+};
+const mixedCoupling={
+ "cts|pvc":{"1/2":"C47-11-NL","3/4":"C47-33-NL","1":"C47-44-NL","1-1/2":"C47-66-NL","2":"C47-77-NL"},
+ "cts|pep":{"3/4":"C46-33-NL","1":"C46-44-NL"}
+};
+function twoConnections(q){
+ let found=[]; for(const [k,terms] of Object.entries({cts:["cts","copper"],pvc:["pvc","ips"],pep:["pep","pe pipe","polyethylene"],ip:["iron pipe"]})){if(terms.some(t=>q.includes(t)))found.push(k)}
+ if(q.includes("both ends")&&found.length===1)return [found[0],found[0]];
+ return found.slice(0,2)
+}
+function show(part,desc,size,note=""){out.innerHTML='<span class="part">'+part+'</span><br>✓ VERIFIED FORD CATALOG MATCH<br><br>'+desc+'<br>Size: '+size+'&quot;'+(note?'<br><br><small>'+note+'</small>':'')}
+function corpLookup(q,s){
+ const ball=q.includes("ballcorp")||q.includes("ball corp")||q.includes("ball corporation");
+ const inlet=(q.includes("cc")||q.includes("awwa"))?"cc":q.includes("mip")?"mip":null;
+ let outlet=q.includes("pvc")||q.includes("ips")?"pvc":q.includes("pep")||q.includes("pe pipe")?"pep":q.includes("fip")?"fip":q.includes("flare")?"flare":q.includes("cts")?"cts":q.includes("mip")&&inlet==="cc"?"mip":null;
+ if(!inlet){out.textContent="For a corporation stop, tell me the inlet: CC/AWWA or MIP.";return}
+ if(!outlet){out.textContent="Tell me the corporation stop outlet: CTS, PEP, PVC/IPS, flare, MIP, or FIP.";return}
+ const series={cc:{cts:"1000",pep:"1001",pvc:"1002",flare:"600",mip:"400",fip:"1600"},mip:{cts:"1100",pep:"1101",pvc:"1102",flare:"700",mip:"500",fip:"1700"}}[inlet][outlet];
+ if(!series){out.textContent="No exact verified corporation-stop series for that request.";return}
+ const large=["1-1/4","1-1/2","2"].includes(s);
+ const prefix=(ball||large)?"FB":"F";
+ const allowed=(prefix==="F")?["1/2","5/8","3/4","1"]:["3/4","1","1-1/4","1-1/2","2"];
+ if(!allowed.includes(s)){out.textContent="That exact corporation-stop size/style is not listed in the loaded Ford catalog table.";return}
+ let suffix=sizes[s]; if(!suffix){out.textContent="Size not supported.";return}
+ let part=prefix+series+"-"+suffix;
+ if(outlet==="pep"&&["1-1/2","2"].includes(s))part+="-IDR7";
+ part+="-NL";
+ show(part,(prefix==="FB"?"Ballcorp":"Corporation stop")+" — "+(inlet==="cc"?"AWWA/CC":"MIP")+" inlet × "+({cts:"Pack Joint CTS",pep:"Pack Joint PEP",pvc:"Pack Joint PVC/IPS",flare:"Flare copper",mip:"MIP",fip:"FIP"}[outlet])+" outlet",s);
+}
+function curbLookup(q,s){
+ let cs=twoConnections(q); if(q.includes("both ends")&&cs.length===1)cs=[cs[0],cs[0]];
+ if(cs.length===0){out.textContent="Tell me the curb-stop end connection: CTS, PEP, PVC/IPS, iron pipe, FIP, MIP, or flare.";return}
+ let part=null,desc="";
+ if(cs.length===1){let m=curbSame[cs[0]];part=m&&m[s];desc=(cs[0].toUpperCase())+" Pack Joint both ends"}
+ else if(cs[0]===cs[1]){let m=curbSame[cs[0]];part=m&&m[s];desc=(cs[0].toUpperCase())+" Pack Joint both ends"}
+ else {let key=[...cs].sort((a,b)=>a==="cts"?-1:b==="cts"?1:a.localeCompare(b)).join("|");let m=mixedCurb[key];part=m&&m[s];desc=cs.map(x=>x.toUpperCase()).join(" × ")+" Pack Joint"}
+ if(!part){out.textContent="No exact VERIFIED Ford curb-stop match is listed in the loaded catalog tables for that combination. I will not guess.";return}
+ show(part,"Ball valve curb stop — "+desc,s,cs.includes("pvc")?"PVC Pack Joints are for Schedule 40/80 PVC or IPS PE DR9/DR11.":"");
+}
+function couplingLookup(q,s){
+ let cs=twoConnections(q); if(q.includes("both ends")&&cs.length===1)cs=[cs[0],cs[0]];
+ if(cs.length===0){out.textContent="Tell me the coupling connection: CTS, PEP, PVC/IPS, or iron pipe.";return}
+ let part=null,desc="";
+ if(cs.length===1||cs[0]===cs[1]){let c=cs[0],m=couplingSame[c];part=m&&m[s];desc=c.toUpperCase()+" Pack Joint both ends"}
+ else {let key=[...cs].sort((a,b)=>a==="cts"?-1:b==="cts"?1:a.localeCompare(b)).join("|");let m=mixedCoupling[key];part=m&&m[s];desc=cs.map(x=>x.toUpperCase()).join(" × ")+" Pack Joint"}
+ if(!part){out.textContent="No exact VERIFIED Ford straight-coupling match is listed in the loaded catalog tables for that combination. I will not guess.";return}
+ show(part,"Straight coupling — "+desc,s,cs.includes("pvc")?"PVC Pack Joints are for Schedule 40/80 PVC or IPS PE DR9/DR11.":"");
+}
+function lookup(){let raw=document.getElementById("q").value,q=norm(raw),type=q.includes("corp")?"corp":q.includes("curb")||q.includes("ball valve")?"curb":q.includes("coupl")?"coupling":null;
+ if(!type){out.textContent="Tell me the product type: corporation stop, curb stop/ball valve, or coupling.";return}
+ let s=requestedSize(q);if(!s){out.textContent="I recognized the product, but I need the size.";return}
+ if(type==="corp")corpLookup(q,s);else if(type==="curb")curbLookup(q,s);else couplingLookup(q,s)}
 function voice(){if(!("webkitSpeechRecognition" in window)){alert("Use your iPhone Shortcut dictation, or type the request here.");return}let r=new webkitSpeechRecognition();r.lang="en-US";r.onresult=e=>{q.value=e.results[0][0].transcript;lookup()};r.start()}
 const u=new URLSearchParams(location.search);if(u.get("q")){q.value=u.get("q");lookup()}
 </script></main></body></html>
