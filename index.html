@@ -2,7 +2,7 @@
 const sizes={"1/2":"1","5/8":"2","3/4":"3","1":"4","1-1/4":"5","1-1/2":"6","2":"7","2-1/2":"8"};
 const codeSize=Object.fromEntries(Object.entries(sizes).map(([k,v])=>[v,k]));
 function norm(s){return s.toLowerCase()
-.replace(/curb\s+top/g,"curb stop").replace(/corporation/g,"corp")
+.replace(/curb\s+top/g,"curb stop").replace(/corporation/g,"corp").replace(/\bpe\b/g,"pep")
 .replace(/quick\s*joint/g,"qj").replace(/pack\s*joint/g,"pj").replace(/ultra[- ]?tite|ultra/g,"ultra")
 .replace(/two and a half/g,"2-1/2").replace(/one and a quarter|one[- ]?quarter/g,"1-1/4")
 .replace(/(?:one|an|a)\s+inch\s+and\s+(?:a\s+)?half|inch\s+and\s+(?:a\s+)?half|one and a half|one[- ]?half/g,"1-1/2")
