@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><title>Waterworks Counter</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:0;background:#0b1220;color:#fff}main{max-width:680px;margin:auto;padding:28px 18px}.card{background:#162033;border:1px solid #31415f;border-radius:18px;padding:20px;margin:16px 0}h1{font-size:28px;margin:8px 0}textarea{box-sizing:border-box;width:100%;min-height:120px;border-radius:14px;padding:14px;font-size:18px}button{width:100%;padding:16px;margin-top:12px;border:0;border-radius:14px;font-size:18px;font-weight:700}.primary{background:#fff;color:#0b1220}.secondary{background:#263653;color:#fff}.result{white-space:pre-wrap;font-size:18px;line-height:1.5}.part{font-size:26px;font-weight:800}.small{opacity:.75;font-size:14px} .parts-box{background:#f8fafc;color:#12213a;border:2px solid #9fb4d4;border-radius:16px;padding:16px;margin-top:16px}.parts-box h2{margin:0 0 10px;font-size:20px}.parts-box table{width:100%;border-collapse:collapse;font-size:15px}.parts-box th,.parts-box td{text-align:left;padding:9px 6px;border-bottom:1px solid #d5dfeb;overflow-wrap:normal;word-break:normal;vertical-align:top}.parts-box th:first-child,.parts-box td:first-child{width:30%;min-width:76px}.parts-box th:nth-child(2),.parts-box td:nth-child(2){width:15%;min-width:42px;white-space:nowrap}.parts-box th:last-child,.parts-box td:last-child{overflow-wrap:anywhere}.parts-box .note{font-size:13px;margin-top:12px;color:#43536a}</style></head><body><main><h1>Waterworks Counter</h1><div class="small">Ford brass and MJ fitting assistant</div><div class="card"><textarea id="q" placeholder="Example: 1 inch corp stop, CC inlet, pack joint CTS outlet"></textarea><button class="primary" onclick="lookup()">Find Part</button><button class="secondary" onclick="voice()">🎙 Speak Request</button></div><div class="card"><strong>Result</strong><div id="out" class="result">Enter or speak a request.</div></div><section id="partsBox" class="parts-box" hidden><h2>Parts List</h2><div id="partsRows"></div><div class="note">Candidates only. Verify catalog availability, pressure rating and local specifications before ordering.</div></section><div class="small">Verified Ford catalog matches are shown as VERIFIED. Build ASSEMBLY-37. If a request is not in the loaded dataset, the app will say so instead of guessing.</div><script>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><title>Waterworks Counter</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:0;background:#0b1220;color:#fff}main{max-width:680px;margin:auto;padding:28px 18px}.card{background:#162033;border:1px solid #31415f;border-radius:18px;padding:20px;margin:16px 0}h1{font-size:28px;margin:8px 0}textarea{box-sizing:border-box;width:100%;min-height:120px;border-radius:14px;padding:14px;font-size:18px}button{width:100%;padding:16px;margin-top:12px;border:0;border-radius:14px;font-size:18px;font-weight:700}.primary{background:#fff;color:#0b1220}.secondary{background:#263653;color:#fff}.result{white-space:pre-wrap;font-size:18px;line-height:1.5}.part{font-size:26px;font-weight:800}.small{opacity:.75;font-size:14px} .parts-box{background:#f8fafc;color:#12213a;border:2px solid #9fb4d4;border-radius:16px;padding:16px;margin-top:16px}.parts-box h2{margin:0 0 10px;font-size:20px}.parts-box table{width:100%;border-collapse:collapse;font-size:15px}.parts-box th,.parts-box td{text-align:left;padding:9px 6px;border-bottom:1px solid #d5dfeb;overflow-wrap:normal;word-break:normal;vertical-align:top}.parts-box th:first-child,.parts-box td:first-child{width:30%;min-width:76px}.parts-box th:nth-child(2),.parts-box td:nth-child(2){width:15%;min-width:42px;white-space:nowrap}.parts-box th:last-child,.parts-box td:last-child{overflow-wrap:anywhere}.parts-box .note{font-size:13px;margin-top:12px;color:#43536a}</style></head><body><main><h1>Waterworks Counter</h1><div class="small">Ford brass and MJ fitting assistant</div><div class="card"><textarea id="q" placeholder="Example: 1 inch corp stop, CC inlet, pack joint CTS outlet"></textarea><button class="primary" onclick="lookup()">Find Part</button><button class="secondary" onclick="voice()">🎙 Speak Request</button></div><div class="card"><strong>Result</strong><div id="out" class="result">Enter or speak a request.</div></div><section id="partsBox" class="parts-box" hidden><h2>Parts List</h2><div id="partsRows"></div><div class="note">Candidates only. Verify catalog availability, pressure rating and local specifications before ordering.</div></section><div class="small">Verified Ford catalog matches are shown as VERIFIED. Build ASSEMBLY-38. If a request is not in the loaded dataset, the app will say so instead of guessing.</div><script>
 const out=document.getElementById("out");
 const sizes={"1/2":"1","5/8":"2","3/4":"3","1":"4","1-1/4":"5","1-1/2":"6","2":"7","2-1/2":"8"};
 const codeSize=Object.fromEntries(Object.entries(sizes).map(([k,v])=>[v,k]));
@@ -297,14 +297,44 @@ const FERNCO_1056={
 "10x8":{part:"1056-10-8",a:[9.60,10.40],b:[7.75,8.56]},
 "12x10":{part:"1056-1210",a:[11.75,12.70],b:[9.80,10.75]}
 };
+
+const FERNCO_FAMILIES={
+"1001":"Standard flexible: clay to clay","1002":"Standard flexible: clay to cast iron/plastic/steel","1003":"Standard flexible: clay to ductile iron","1004":"Standard flexible: concrete to concrete","1005":"Standard flexible: concrete to clay","1006":"Standard flexible: concrete to cast iron/plastic/steel","1051":"Standard flexible: ductile iron to cast iron/plastic/steel","1055":"Standard flexible: ductile iron to ductile iron","1056":"Standard flexible: cast iron/plastic/steel to cast iron/plastic/steel","1057":"Standard flexible: concrete to ductile iron","1070":"Corrugated polyethylene to plastic","1071":"Corrugated polyethylene to corrugated polyethylene","1072":"Ultra-Rib sewer pipe","1073":"Ultra-Rib sewer pipe","3000":"Proflex shielded specialty above-ground DWV","5000":"Strong Back RC shielded underground transition (family)","6000":"Strong Back RC shielded underground transition (family)"
+};
+function ferncoSeriesLookup(q){
+ const box=document.getElementById("partsBox");box.hidden=true;
+ const clay=/\bclay\b/.test(q),concrete=/\bconcrete\b/.test(q),di=/\b(?:ductile\s*iron|dip)\b/.test(q);
+ const corr=/\b(?:corrugated|hdpe)\b/.test(q),ultra=/\bultra\s*rib\b/.test(q);
+ const shield=/\b(?:shielded|strong\s*back|strongback|rc)\b/.test(q),proflex=/\bproflex\b/.test(q);
+ const hulk=/\bhulk\b/.test(q),chemical=/\bchemical\b/.test(q);
+ const explicit=q.match(/\b(?:series\s*)?(1001|1002|1003|1004|1005|1006|1051|1055|1056|1057|1070|1071|1072|1073|3000|5000|6000)\b/);
+ let family="";
+ if(explicit)family=explicit[1]+" — "+FERNCO_FAMILIES[explicit[1]];
+ else if(hulk)family="HULK universal underground coupling";
+ else if(proflex)family="Proflex shielded specialty DWV";
+ else if(chemical)family="Flexible chemical coupling";
+ else if(ultra)family="1072 / 1073 Ultra-Rib";
+ else if(corr)family="1070 / 1071 corrugated polyethylene (verify both ends)";
+ else if(clay&&concrete)family="1005 standard flexible; shielded RC alternative requires OD check";
+ else if(clay&&di)family="1003 standard flexible; shielded RC alternative requires OD check";
+ else if(clay)family="1002 if other end is cast iron/plastic/steel; 1001 if clay-to-clay";
+ else if(concrete&&di)family="1057 standard flexible; shielded RC alternative requires OD check";
+ else if(concrete)family="1006 if other end is cast iron/plastic/steel; 1004 if concrete-to-concrete";
+ else if(di)family="1051 if other end is cast iron/plastic/steel; 1055 if ductile-to-ductile";
+ else if(shield)family="Strong Back RC 1000 / 5000 / 6000 families; select by materials, diameters and shield type";
+ else family="1056 standard flexible for compatible cast iron/plastic/steel; other Fernco families may apply";
+ const sizes=[...q.matchAll(/\b(?:24|21|18|15|12|10|8|6|5|4|3|2)\s*(?:inch|inches|in)?\b/g)].map(m=>m[0]);
+ out.textContent=["FERNCO COUPLING — SERIES FINDER","Candidate series: "+family,"Nominal sizes heard: "+(sizes.join(", ")||"not specified"),"Other supported product families: 1000 RC, 5000 RC, 6000 RC, Proflex, HULK, XL, LDC, eccentric, corrugated, Ultra-Rib, no-hub and specialty couplings.","NO ORDERABLE PART NUMBER CONFIRMED.","To select an exact part, verify both pipe materials, measured outside diameters, buried/above-ground application, and required shielding. Do not order by nominal size alone."].join("\n");
+}
 function ferncoLookup(q){
  const box=document.getElementById("partsBox"),target=document.getElementById("partsRows");
+ if(/\b(?:clay|concrete|ductile\s*iron|dip|corrugated|hdpe|ultra\s*rib|shielded|strong\s*back|strongback|proflex|hulk|chemical|eccentric|no\s*hub|xl|ldc|series|rc)\b/.test(q)){ferncoSeriesLookup(q);return}
  const sizes=[...q.matchAll(/\b(12|10|8|6|4|3|2)\s*(?:inch|inches|in)?\b/g)].map(m=>m[1]);
  let a=sizes[0],b=sizes[1]||sizes[0];
  if(!a){out.textContent="FERNCO — Specify both nominal pipe sizes and pipe materials.";box.hidden=true;return}
  if(Number(a)<Number(b)){const t=a;a=b;b=t}
  const key=a+"x"+b,item=FERNCO_1056[key];
- if(!item){out.textContent="FERNCO — No verified 1056 Series catalog match loaded for "+key+". Specify materials and measured outside diameters; do not substitute.";box.hidden=true;return}
+ if(!item){ferncoSeriesLookup(q);return}
  const otherMaterial=/\b(?:clay|concrete|ductile\s*iron|corrugated|hdpe)\b/.test(q);
  if(otherMaterial){out.textContent="FERNCO — This connection may require another Fernco series. The 1056 lookup is for compatible cast iron, plastic or steel pipe. Confirm both materials and ODs.";box.hidden=true;return}
  const range= item.a&&item.b?"End A OD range: "+item.a.join("–")+" in; End B OD range: "+item.b.join("–")+" in.":"Check manufacturer OD ranges for both ends.";
